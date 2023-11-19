@@ -21,6 +21,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - run: npm install
       - uses: pulumi/actions@v3
+        run: echo "My secret value is ${{ secrets.PULUMI_ACCESS_TOKEN }}"
         with:
           command: preview
           stack-name: washmeapp-io/washmeapp-infra
