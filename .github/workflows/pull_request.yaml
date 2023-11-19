@@ -23,6 +23,6 @@ jobs:
       - uses: pulumi/actions@v3
         with:
           command: preview
-          stack-name: washmeapp-io/washmeapp-infra
+          stack-name: duribe0196/washmeapp-infra
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
