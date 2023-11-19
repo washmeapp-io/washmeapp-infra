@@ -1,10 +1,13 @@
 name: Pulumi
 on:
-  - pull_request
+  pull_request:
+    branches:
+      - main
 jobs:
   preview:
     name: Preview
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3.5.0
