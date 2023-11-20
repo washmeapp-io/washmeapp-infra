@@ -28,9 +28,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Debug Pulumi Access Token
-        run: echo "ACCESS TOKEN ${{ secrets.PULUMI_ACCESS_TOKEN }}"
-
       - run: Pulumi Preview
       - uses: pulumi/actions@v3
         with:
