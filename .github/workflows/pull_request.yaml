@@ -16,6 +16,12 @@ jobs:
         uses: actions/setup-node@v3.5.0
         with:
           node-version-file: package.json
+          settings-path: .npmrc
+
+      - name: Config NPM
+        uses: actions/npm-auth@v1
+        with:
+          registry-url: 'https://npm.pkg.github.com'
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
