@@ -9,22 +9,30 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3.5.0
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v3.5.0
         with:
           node-version-file: package.json
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Debug npmrc
-        run: cat $HOME/.npmrc
+
       - name: Install dependencies
         run: npm install
+
+      - name: Debug npmrc
+        run: cat $HOME/.npmrc
+
       - name: Debug Pulumi Access Token
         run: echo "ACCESS TOKEN ${{ secrets.PULUMI_ACCESS_TOKEN }}"
+
       - run: npm install
       - uses: pulumi/actions@v3
         with:
