@@ -28,9 +28,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Debug npmrc
-        run: cat $HOME/.npmrc
-
       - name: Debug Pulumi Access Token
         run: echo "ACCESS TOKEN ${{ secrets.PULUMI_ACCESS_TOKEN }}"
 
