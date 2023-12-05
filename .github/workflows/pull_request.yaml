@@ -20,7 +20,7 @@ jobs:
       - name: Install Pulumi CLI
         run: |
           curl -fsSL https://get.pulumi.com | sh
-          export PATH=$PATH:/root/.pulumi/bin
+          export PATH=$PATH:/home/runner/.pulumi/bin
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
