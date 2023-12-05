@@ -18,9 +18,7 @@ jobs:
           node-version-file: package.json
 
       - name: Install Pulumi CLI
-        run: |
-          curl -fsSL https://get.pulumi.com | sh
-          export PATH=$PATH:/home/runner/.pulumi/bin
+        uses: pulumi/setup-pulumi@v2
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
