@@ -17,9 +17,6 @@ jobs:
         with:
           node-version-file: package.json
 
-      - name: Install Pulumi CLI
-        uses: pulumi/setup-pulumi@v2
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -27,11 +24,13 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Pulumi CLI
+        run: |
+          curl -fsSL https://get.pulumi.com | sh
+          echo "$HOME/.pulumi/bin" >> $GITHUB_PATH
 
-      - run: Pulumi Preview
-      - uses: pulumi/actions@v4
+      - run: npm install
+      - uses: pulumi/actions@v3
         with:
           command: preview
           stack-name: washmeapp-infra
