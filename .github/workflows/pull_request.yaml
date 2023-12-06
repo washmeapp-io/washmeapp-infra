@@ -29,8 +29,11 @@ jobs:
           curl -fsSL https://get.pulumi.com | sh
           echo "$HOME/.pulumi/bin" >> $GITHUB_PATH
 
-      - run: npm install
-      - uses: pulumi/actions@v3
+      - name: Install NodeJs Dependencies
+        run: npm install
+
+      - name: Pulumi Preview
+        uses: pulumi/actions@v3
         with:
           command: preview
           stack-name: washmeapp-infra
