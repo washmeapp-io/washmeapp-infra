@@ -32,6 +32,9 @@ jobs:
       - name: Install NodeJs Dependencies
         run: npm install
 
+      - name: Select Pulumi Stack
+        run: pulimi stack select washmeapp-infra
+
       - name: Pulumi Preview
         uses: pulumi/actions@v3
         with:
