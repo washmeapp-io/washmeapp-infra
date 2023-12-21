@@ -33,7 +33,7 @@ jobs:
         run: npm install
 
       - name: Select Pulumi Stack
-        run: pulimi stack select washmeapp-infra
+        run: pulumi stack select washmeapp-infra
 
       - name: Pulumi Preview
         uses: pulumi/actions@v3
