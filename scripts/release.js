@@ -10,5 +10,5 @@ execSync(`gh release create v${version} -t "Release v${version}"`);
 execSync("npm pack");
 
 // Move the tarball to a releases directory
-const tarballName = `@organization-infra-${version}.tgz`;
+const tarballName = `@washmeapp/infra-${version}.tgz`;
 fs.renameSync(`./${tarballName}`, `./releases/${tarballName}`);
