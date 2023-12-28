@@ -2,7 +2,7 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 
 const version = require("../package.json").version;
-const packageName = require("../package.json").name.replace("@", "");
+const packageName = require("../package.json").name;
 
 // Create a GitHub release
 execSync(`gh release create v${version} -t "Release v${version}"`);
@@ -11,9 +11,14 @@ execSync(`gh release create v${version} -t "Release v${version}"`);
 execSync("npm pack");
 
 // Move the tarball to the releases folder only if it exists
-const tarballName = `${packageName}-${version}.tgz`;
+const tarballName = `${packageName.replace("/", "-")}-${version}.tgz`;
 const sourcePath = `./${tarballName}`;
 const destinationPath = `./releases/${tarballName}`;
+
+execSync("ls");
+console.log(tarballName);
+console.log(sourcePath);
+console.log(destinationPath);
 
 // Check if the tarball exists before moving it
 if (fs.existsSync(sourcePath)) {
