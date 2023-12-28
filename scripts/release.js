@@ -2,7 +2,7 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 
 const version = require("../package.json").version;
-const packageName = require("../package.json").name;
+const packageName = require("../package.json").name.replace("@", "");
 
 // Create a GitHub release
 execSync(`gh release create v${version} -t "Release v${version}"`);
