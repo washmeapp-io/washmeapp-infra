@@ -21,6 +21,7 @@ const destinationPath = `./releases/${tarballName}`;
 if (fs.existsSync(sourcePath)) {
   // Move the tarball to the releases folder
   fs.renameSync(sourcePath, destinationPath);
+  console.log(`Tarball '${tarballName}' moved to 'releases' folder.`);
 } else {
   // Handle the case where the tarball doesn't exist
   console.error(`Error: Tarball '${tarballName}' does not exist.`);
