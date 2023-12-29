@@ -50,6 +50,8 @@ jobs:
         uses: pulumi/actions@v3
         with:
           command: preview
+          comment-on-pr: true
+          github-token: ${{ secrets.GH_ACTION_TOKEN }}
           stack-name: dev
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
