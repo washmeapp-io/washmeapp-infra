@@ -18,7 +18,7 @@ jobs:
           node-version-file: package.json
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
@@ -47,7 +47,7 @@ jobs:
         run: pulumi config set aws:region ${{ secrets.AWS_REGION }}
 
       - name: Pulumi Preview
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v3
         with:
           command: preview
           stack-name: dev
