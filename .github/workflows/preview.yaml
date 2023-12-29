@@ -43,6 +43,9 @@ jobs:
       - name: Select Pulumi Stack
         run: pulumi stack select dev
 
+      - name: Pulumi config
+        run: pulumi config set aws:region ${{ secrets.AWS_REGION }}
+
       - name: Pulumi Preview
         uses: pulumi/actions@v3
         with:
