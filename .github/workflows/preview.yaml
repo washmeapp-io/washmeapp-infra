@@ -47,10 +47,9 @@ jobs:
         run: pulumi config set aws:region ${{ secrets.AWS_REGION }}
 
       - name: Pulumi Preview
-        uses: pulumi/actions@v3
+        uses: pulumi/actions@v4
         with:
           command: preview
           stack-name: dev
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_DEBUG: "true"
