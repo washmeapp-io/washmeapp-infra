@@ -23,7 +23,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-profile: default
 
       - name: Install Pulumi CLI
         run: |
@@ -45,7 +44,7 @@ jobs:
         run: pulumi stack select dev
 
       - name: Pulumi config
-        run: pulumi config set aws:region ${{ secrets.AWS_REGION }} && pulumi config set aws:profile default
+        run: pulumi config set aws:region ${{ secrets.AWS_REGION }}
 
       - name: Pulumi Preview
         uses: pulumi/actions@v4
