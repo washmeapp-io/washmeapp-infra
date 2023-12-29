@@ -1,13 +1,6 @@
 {
-  "name": "@washmeapp/infra",
-  "main": "bin/index.js",
-  "version": "1.0.0",
-  "engines": {
-    "node": "18.12.0"
-  },
-  "scripts": {
-    "release": "node scripts/release.js"
-  },
+  "name": "washmeapp-infra",
+  "main": "index.ts",
   "devDependencies": {
     "@types/node": "^18",
     "typescript": "^4.0.0"
