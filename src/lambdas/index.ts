@@ -1,25 +1,28 @@
 import * as aws from "@pulumi/aws";
 import { lambdaRole } from "../roles";
-import { BucketObject } from "@pulumi/aws/s3";
-import { ProviderResource } from "@pulumi/pulumi";
+import { Output, ProviderResource } from "@pulumi/pulumi";
 
 interface CreateLambdaParams {
   name: string;
-  code: BucketObject;
+  bucketName: Output<string>;
+  codeObjectKey: string;
   provider: ProviderResource;
 }
 
 export function createLambdaFunction(
   args: CreateLambdaParams
 ): aws.lambda.Function {
-  const { name, code, provider } = args;
+  const { name, bucketName, codeObjectKey, provider } = args;
   const lambda = new aws.lambda.Function(
     name,
     {
       runtime: aws.lambda.NodeJS12dXRuntime,
       handler: "index.handler",
       role: lambdaRole.arn,
-      code,
+      code: {
+        s3Bucket: bucketName,
+        s3Key: codeObjectKey,
+      },
     },
     { provider }
   );

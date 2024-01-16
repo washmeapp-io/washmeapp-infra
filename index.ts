@@ -4,15 +4,12 @@ import * as utils from "./src/utils";
 
 const provider = utils.createDefaultProvider();
 const userBucket = buckets.createBucket({
-  name: "lambda-users-code",
+  name: "lambdas-code",
   provider: provider,
-});
-const lambdaCode = buckets.uploadLambdaCode({
-  bucket: userBucket,
-  filePath: "./",
 });
 lambda.createLambdaFunction({
   name: "washmeapp-user",
-  code: lambdaCode,
+  bucketName: userBucket.bucket,
+  codeObjectKey: "users",
   provider: provider,
 });
