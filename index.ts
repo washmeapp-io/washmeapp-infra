@@ -7,8 +7,12 @@ const userBucket = buckets.createBucket({
   name: "lambda-users-code",
   provider: provider,
 });
+const lambdaCode = buckets.uploadLambdaCode({
+  bucket: userBucket,
+  filePath: "./",
+});
 lambda.createLambdaFunction({
   name: "washmeapp-user",
-  code: userBucket,
+  code: lambdaCode,
   provider: provider,
 });
