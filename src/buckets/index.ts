@@ -1,15 +1,15 @@
 import * as aws from "@pulumi/aws";
 import { ProviderResource } from "@pulumi/pulumi";
 
-export function createBucket({
-  name,
-  provider,
-}: {
+interface CreateBucketParams {
   name: string;
   provider: ProviderResource;
-}) {
+}
+
+export function createBucket(args: CreateBucketParams) {
+  const { name, provider } = args;
   const bucket = new aws.s3.BucketObject(
-    "washmeapp-backend-code",
+    name,
     {
       bucket: name,
     },

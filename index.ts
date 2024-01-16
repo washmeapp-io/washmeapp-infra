@@ -4,7 +4,7 @@ import * as utils from "./src/utils";
 
 const provider = utils.createDefaultProvider();
 const userBucket = buckets.createBucket({
-  name: "lambda-users",
+  name: "lambda-users-code",
   provider: provider,
 });
 lambda.createLambdaFunction({
