@@ -7,8 +7,11 @@ const userBucket = buckets.createBucket({
   name: "washmeapp-code",
   provider: provider,
 });
-lambda.createLambdaFunction({
-  name: "washmeapp-api-users",
-  bucket: userBucket,
-  provider: provider,
+userBucket.onObjectCreated("users-api", () => {
+  lambda.createLambdaFunction({
+    name: "washmeapp-api-users",
+    bucket: userBucket,
+    provider: provider,
+    bucketKey: "users-api",
+  });
 });
