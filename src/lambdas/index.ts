@@ -1,11 +1,11 @@
 import * as aws from "@pulumi/aws";
 import { lambdaRole } from "../roles";
 import { Output, ProviderResource } from "@pulumi/pulumi";
-import { Bucket } from "@pulumi/aws/s3";
+import { Bucket, GetBucketResult } from "@pulumi/aws/s3";
 
 interface CreateLambdaParams {
   name: string;
-  bucket: Bucket;
+  bucketId: string;
   bucketKey: string;
   provider: ProviderResource;
 }
@@ -13,14 +13,14 @@ interface CreateLambdaParams {
 export function createLambdaFunction(
   args: CreateLambdaParams
 ): aws.lambda.Function {
-  const { name, bucket, provider, bucketKey } = args;
+  const { name, bucketId, provider, bucketKey } = args;
   const lambda = new aws.lambda.Function(
     name,
     {
       runtime: aws.lambda.NodeJS12dXRuntime,
       handler: "index.handler",
       role: lambdaRole.arn,
-      s3Bucket: bucket.id,
+      s3Bucket: bucketId,
       s3Key: bucketKey,
     },
     { provider }

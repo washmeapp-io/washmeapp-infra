@@ -6,21 +6,20 @@ import * as lambda from "./src/lambdas";
 import * as utils from "./src/utils";
 import * as apiGateway from "./src/api-gateway";
 
-const provider = utils.createDefaultProvider();
-const userBucket = buckets.createBucket({
-  name: "washmeapp-code",
-  provider: provider,
-});
-userBucket.onObjectCreated("users-api", async () => {
-  const usersApiCode = await aws.s3.getBucketObject({
+(async () => {
+  const provider = utils.createDefaultProvider();
+  const usersApiBucket = await aws.s3.getBucket({
     bucket: "washmeapp-code",
+  });
+  const usersApiBucketObject = await aws.s3.getBucketObject({
+    bucket: usersApiBucket.bucket,
     key: "users-api",
   });
   const usersLambda = lambda.createLambdaFunction({
     name: "washmeapp-api-users",
-    bucket: userBucket,
+    bucketId: usersApiBucket.id,
     provider: provider,
-    bucketKey: usersApiCode.key,
+    bucketKey: usersApiBucketObject.key,
   });
 
   const usersApi = apiGateway.createAPIGateway({
@@ -47,4 +46,4 @@ userBucket.onObjectCreated("users-api", async () => {
     restApi: usersApi.api.id,
     stageName: "dev",
   });
-});
+})();
