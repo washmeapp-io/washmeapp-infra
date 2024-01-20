@@ -33,15 +33,15 @@ export async function getBucket(
 }
 
 interface GetBucketObjectParams {
-  bucketArn: string;
+  bucketName: string;
   objectKey: string;
 }
 export async function getBucketObject(
   args: GetBucketObjectParams
 ): Promise<aws.s3.GetBucketObjectResult> {
-  const { bucketArn, objectKey } = args;
+  const { bucketName, objectKey } = args;
   const object = await aws.s3.getBucketObject({
-    bucket: bucketArn,
+    bucket: bucketName,
     key: objectKey,
   });
   return object;
