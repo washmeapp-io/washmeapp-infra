@@ -1,7 +1,6 @@
 import * as aws from "@pulumi/aws";
 import { lambdaRole } from "../roles";
-import { Output, ProviderResource } from "@pulumi/pulumi";
-import { Bucket, GetBucketResult } from "@pulumi/aws/s3";
+import { ProviderResource } from "@pulumi/pulumi";
 
 interface CreateLambdaParams {
   name: string;
@@ -17,7 +16,7 @@ export function createLambdaFunction(
   const lambda = new aws.lambda.Function(
     name,
     {
-      runtime: aws.lambda.NodeJS12dXRuntime,
+      runtime: "nodejs18.x",
       handler: "index.handler",
       role: lambdaRole.arn,
       s3Bucket: bucketId,
