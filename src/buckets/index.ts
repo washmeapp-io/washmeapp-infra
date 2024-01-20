@@ -1,5 +1,4 @@
 import * as aws from "@pulumi/aws";
-import * as pulumi from "@pulumi/pulumi";
 
 import { ProviderResource } from "@pulumi/pulumi";
 
@@ -18,4 +17,32 @@ export function createBucket(args: CreateBucketParams) {
     { provider: provider }
   );
   return bucket;
+}
+
+interface GetBucketParams {
+  name: string;
+}
+export async function getBucket(
+  args: GetBucketParams
+): Promise<aws.s3.GetBucketResult> {
+  const { name } = args;
+  const bucket = await aws.s3.getBucket({
+    bucket: name,
+  });
+  return bucket;
+}
+
+interface GetBucketObjectParams {
+  bucketArn: string;
+  objectKey: string;
+}
+export async function getBucketObject(
+  args: GetBucketObjectParams
+): Promise<aws.s3.GetBucketObjectResult> {
+  const { bucketArn, objectKey } = args;
+  const object = await aws.s3.getBucketObject({
+    bucket: bucketArn,
+    key: objectKey,
+  });
+  return object;
 }

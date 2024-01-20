@@ -1,20 +1,19 @@
 import * as aws from "@pulumi/aws";
 import * as crypto from "crypto";
 
-import * as buckets from "./src/buckets";
 import * as lambda from "./src/lambdas";
+import * as buckets from "./src/buckets";
 import * as utils from "./src/utils";
 import * as apiGateway from "./src/api-gateway";
 
 (async () => {
   const provider = utils.createDefaultProvider();
-  const usersApiBucket = await aws.s3.getBucket({
-    bucket: "washmeapp-code",
+  const usersApiBucket = await buckets.getBucket({ name: "washmeapp-code" });
+  const usersApiBucketObject = await buckets.getBucketObject({
+    bucketArn: usersApiBucket.arn,
+    objectKey: "users-api",
   });
-  const usersApiBucketObject = await aws.s3.getBucketObject({
-    bucket: usersApiBucket.bucket,
-    key: "users-api",
-  });
+
   const usersLambda = lambda.createLambdaFunction({
     name: "washmeapp-api-users",
     bucketId: usersApiBucket.id,
