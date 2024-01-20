@@ -11,7 +11,7 @@ import * as apiGateway from "./src/api-gateway";
   const usersApiBucket = await buckets.getBucket({ name: "washmeapp-code" });
   const usersApiBucketObject = await buckets.getBucketObject({
     bucketName: usersApiBucket.bucket,
-    objectKey: "users-api/index.js",
+    objectKey: "users-api/code.zip",
   });
 
   const usersLambda = lambda.createLambdaFunction({
