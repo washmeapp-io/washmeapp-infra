@@ -13,7 +13,14 @@ export function createAPIGateway(args: CreateAPIGatewayParams) {
   const api = new apigateway.RestAPI(
     name,
     {
-      routes: [{ path: "/", method: "GET", eventHandler: handler }],
+      routes: [
+        {
+          path: "/",
+          method: "GET",
+          eventHandler: handler,
+          contentType: "application/json",
+        },
+      ],
     },
     { provider }
   );
