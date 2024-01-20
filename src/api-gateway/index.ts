@@ -5,13 +5,18 @@ import * as pulumi from "@pulumi/pulumi";
 interface CreateAPIGatewayParams {
   name: string;
   handler: pulumi.Input<aws.lambda.Function>;
+  provider: pulumi.ProviderResource;
 }
 
 export function createAPIGateway(args: CreateAPIGatewayParams) {
-  const { name, handler } = args;
-  const api = new apigateway.RestAPI(name, {
-    routes: [{ path: "/", method: "GET", eventHandler: handler }],
-  });
+  const { name, handler, provider } = args;
+  const api = new apigateway.RestAPI(
+    name,
+    {
+      routes: [{ path: "/", method: "GET", eventHandler: handler }],
+    },
+    { provider }
+  );
 
   return api;
 }

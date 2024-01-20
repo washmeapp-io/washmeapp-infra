@@ -22,5 +22,11 @@ userBucket.onObjectCreated("users-api", async () => {
     bucketKey: usersApiCode.key,
   });
 
-  apiGateway.createAPIGateway({ name: "users-api", handler: usersLambda });
+  const api = apiGateway.createAPIGateway({
+    name: "users-api",
+    handler: usersLambda,
+    provider,
+  });
+
+  api.deployment.apply(() => {});
 });
