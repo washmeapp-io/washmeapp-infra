@@ -1,18 +1,18 @@
 import * as aws from "@pulumi/aws";
+import * as pulumi from "@pulumi/pulumi";
+
 import { lambdaRole } from "../roles";
-import { ProviderResource } from "@pulumi/pulumi";
 
 interface CreateLambdaParams {
   name: string;
   bucketId: string;
   bucketKey: string;
-  provider: ProviderResource;
+  provider: pulumi.ProviderResource;
 }
 
-export function createLambdaFunction(
-  args: CreateLambdaParams
-): aws.lambda.Function {
+export function createLambdaFunction(args: CreateLambdaParams) {
   const { name, bucketId, provider, bucketKey } = args;
+
   const lambda = new aws.lambda.Function(
     name,
     {
@@ -25,5 +25,5 @@ export function createLambdaFunction(
     { provider }
   );
 
-  return lambda;
+  return { lambda };
 }

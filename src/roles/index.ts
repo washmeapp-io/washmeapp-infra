@@ -1,22 +1,38 @@
 import * as aws from "@pulumi/aws";
 
-export const lambdaRole = new aws.iam.Role("lambdaRole", {
-  assumeRolePolicy: JSON.stringify({
+const assumeRole = aws.iam.getPolicyDocument({
+  statements: [
+    {
+      effect: "Allow",
+      principals: [
+        {
+          type: "Service",
+          identifiers: ["lambda.amazonaws.com"],
+        },
+      ],
+      actions: ["sts:AssumeRole"],
+    },
+  ],
+});
+
+export const lambdaRole = new aws.iam.Role("role", {
+  assumeRolePolicy: assumeRole.then((assumeRole) => assumeRole.json),
+});
+
+new aws.iam.RolePolicy("lambda-log-policy", {
+  role: lambdaRole.id,
+  policy: JSON.stringify({
     Version: "2012-10-17",
     Statement: [
       {
-        Action: "sts:AssumeRole",
-        Principal: {
-          Service: "lambda.amazonaws.com",
-        },
+        Action: [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+        ],
+        Resource: "arn:aws:logs:*:*:*",
         Effect: "Allow",
-        Sid: "",
       },
     ],
   }),
-});
-
-new aws.iam.RolePolicyAttachment("lambdaFullAccess", {
-  role: lambdaRole.name,
-  policyArn: "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
 });
