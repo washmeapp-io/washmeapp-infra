@@ -22,7 +22,11 @@ export function createUserPool(args: ICreateUserPool) {
     userPoolId: userPool.id,
     generateSecret: false,
     // Recommended to enable the client to use the refresh token
-    explicitAuthFlows: ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+    explicitAuthFlows: [
+      "ALLOW_USER_SRP_AUTH",
+      "ALLOW_REFRESH_TOKEN_AUTH",
+      "ALLOW_CUSTOM_AUTH",
+    ],
   });
 
   new aws.lambda.Permission("allowCognitoToCallCustomMessageLambda", {
