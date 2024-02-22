@@ -25,6 +25,12 @@ jobs:
           aws-region: us-east-1
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Calculate S3 object hash - for lambda updates
+        id: s3hash
+        run: |
+          HASH=$(aws s3 cp s3://washmeapp-code/users-api/code.zip - | openssl dgst -sha256)
+          echo "::set-output name=hash::${HASH}"
+
       - name: Install Pulumi CLI
         run: |
           curl -fsSL https://get.pulumi.com | sh
@@ -54,3 +60,4 @@ jobs:
           stack-name: dev
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          S3_OBJECT_HASH: ${{ steps.s3hash.outputs.hash }}

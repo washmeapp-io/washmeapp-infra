@@ -1,36 +1,42 @@
 import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
+import { createAPIGatewayResources } from "./resources";
+import { createAPIGatewayMethods } from "./methods";
+import { createAPIGatewayIntegrations } from "./integrations";
 
 interface CreateAPIGatewayParams {
   name: string;
   handler: aws.lambda.Function;
   provider: pulumi.ProviderResource;
+  userPool: aws.cognito.UserPool;
 }
 
 export function createAPIGateway(args: CreateAPIGatewayParams) {
-  const { name, handler, provider } = args;
+  const { name, handler, provider, userPool } = args;
   const api = new aws.apigateway.RestApi(name, {}, { provider });
 
-  const getResource = new aws.apigateway.Resource("get-resource", {
-    restApi: api.id,
-    parentId: api.rootResourceId,
-    pathPart: "users",
+  // Create an API Gateway Authorizer using the Cognito User Pool
+  const authorizer = new aws.apigateway.Authorizer("cognito-authorizer", {
+    restApi: api,
+    type: "COGNITO_USER_POOLS",
+    identitySource: "method.request.header.Authorization",
+    providerArns: [userPool.arn],
   });
 
-  const getMethod = new aws.apigateway.Method("get-method", {
-    restApi: api.id,
-    resourceId: getResource.id,
-    httpMethod: "GET",
-    authorization: "NONE",
+  const { loginResource, usersResource } = createAPIGatewayResources({ api });
+  const { getUsersMethod, loginPostMethod } = createAPIGatewayMethods({
+    api,
+    authorizer,
+    loginResource,
+    usersResource,
   });
-
-  new aws.apigateway.Integration("aws-integration", {
-    restApi: api.id,
-    resourceId: getResource.id,
-    httpMethod: getMethod.httpMethod,
-    type: "AWS_PROXY", // Integration type. AWS_PROXY for Lambda proxy integration
-    uri: handler.invokeArn,
-    integrationHttpMethod: "POST",
+  createAPIGatewayIntegrations({
+    api,
+    getUsersMethod,
+    handler,
+    loginPostMethod,
+    loginResource,
+    usersResource,
   });
 
   // Enable API Gateway to invoke the Lambda function
@@ -41,22 +47,22 @@ export function createAPIGateway(args: CreateAPIGatewayParams) {
     sourceArn: pulumi.interpolate`${api.executionArn}/*/*`, // Allow invoking the function via any method on any path of this API
   });
 
-  // Deploy the API to make it available
-  const deployment = new aws.apigateway.Deployment(
-    "deployment",
-    {
-      restApi: api,
-      stageName: "dev",
-    },
-    { dependsOn: [getMethod] }
-  );
+  // Deploy the API to make it available - this trows an error in the automation
+  // const deployment = new aws.apigateway.Deployment(
+  //   "deployment",
+  //   {
+  //     restApi: api,
+  //     stageName: "dev",
+  //   },
+  //   { dependsOn: [getUsersMethod, loginPostMethod] }
+  // );
 
-  //Set up a dev stage, which is an environment
-  new aws.apigateway.Stage("v1-stage", {
-    restApi: api,
-    deployment: deployment.id,
-    stageName: "dev",
-  });
+  //Set up a dev stage, which is an environment - this trows an error in the automation
+  // new aws.apigateway.Stage("v1-stage", {
+  //   restApi: api,
+  //   deployment: deployment.id,
+  //   stageName: "dev",
+  // });
 
   return api;
 }
