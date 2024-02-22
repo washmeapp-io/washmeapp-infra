@@ -14,6 +14,9 @@ export function createUserPool(args: ICreateUserPool) {
     autoVerifiedAttributes: ["email"],
     lambdaConfig: {
       customMessage: trigger.arn,
+      createAuthChallenge: trigger.arn,
+      defineAuthChallenge: trigger.arn,
+      verifyAuthChallengeResponse: trigger.arn,
     },
   });
 
