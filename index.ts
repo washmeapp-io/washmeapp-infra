@@ -5,6 +5,7 @@ import * as apiGatewayUtils from "./src/api-gateway";
 import * as cognitoUtils from "./src/cognito";
 import * as utils from "./src/utils";
 import { assignLambdaCognitoPolicy } from "./src/roles/policyAttachments";
+import { lambdaRole } from "./src/roles/roles";
 
 const provider = utils.createDefaultProvider();
 
@@ -27,7 +28,7 @@ const { userPool } = cognitoUtils.createUserPool({
   trigger: lambda,
 });
 
-assignLambdaCognitoPolicy(userPool.arn);
+assignLambdaCognitoPolicy(userPool.arn, lambdaRole);
 
 const api = apiGatewayUtils.createAPIGateway({
   name: "users-api",

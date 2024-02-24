@@ -1,10 +1,10 @@
 import * as aws from "@pulumi/aws";
-import { lambdaRole } from "./roles";
+import { Role } from "@pulumi/aws/iam";
 import { Output } from "@pulumi/pulumi";
 
 export function assignLambdaCognitoPolicy(
   userPoolArn: Output<string>,
-  lambdaRoleName: string
+  lambdaRole: Role
 ) {
   userPoolArn.apply((arn) => {
     const cognitoPolicyDocument = aws.iam
@@ -12,10 +12,7 @@ export function assignLambdaCognitoPolicy(
         statements: [
           {
             effect: "Allow",
-            actions: [
-              "cognito-idp:AdminCreateUser",
-              // Add any other Cognito actions your Lambda needs here
-            ],
+            actions: ["cognito-idp:AdminCreateUser"],
             resources: [arn],
           },
         ],
@@ -28,7 +25,7 @@ export function assignLambdaCognitoPolicy(
 
     cognitoPolicy.arn.apply((policyArn) => {
       new aws.iam.RolePolicyAttachment("lambdaCognitoPolicyAttachment", {
-        role: lambdaRoleName,
+        role: lambdaRole,
         policyArn: policyArn,
       });
     });
