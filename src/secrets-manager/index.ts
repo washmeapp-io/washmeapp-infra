@@ -1,0 +1,1 @@
+export { createCognitoSecrets } from "./cognitoSecrets";
