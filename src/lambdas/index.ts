@@ -1,7 +1,7 @@
 import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 
-import { lambdaRole } from "../roles";
+import { lambdaRole } from "../roles/roles";
 
 type Environment = {
   variables: {

@@ -36,18 +36,3 @@ new aws.iam.RolePolicy("lambda-log-policy", {
     ],
   }),
 });
-
-const cognitoPolicy = aws.iam.getPolicyDocument({
-  statements: [
-    {
-      actions: ["sts:AssumeRole"],
-      principals: [
-        { type: "Service", identifiers: ["cognito-idp.amazonaws.com"] },
-      ],
-    },
-  ],
-});
-
-export const congnitoRole = new aws.iam.Role("cognito-role", {
-  assumeRolePolicy: cognitoPolicy.then((assumeRole) => assumeRole.json),
-});

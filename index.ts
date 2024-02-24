@@ -4,6 +4,7 @@ import * as lambdaUtils from "./src/lambdas";
 import * as apiGatewayUtils from "./src/api-gateway";
 import * as cognitoUtils from "./src/cognito";
 import * as utils from "./src/utils";
+import { assignLambdaCognitoPolicy } from "./src/roles/policyAttachments";
 
 const provider = utils.createDefaultProvider();
 
@@ -20,11 +21,13 @@ const { lambda } = lambdaUtils.createLambdaFunction({
   },
 });
 
-const { userPool, userPoolClient } = cognitoUtils.createUserPool({
+const { userPool } = cognitoUtils.createUserPool({
   userPoolClientName: "washme-user-pool-client",
   userPoolName: "washme-user-pool",
   trigger: lambda,
 });
+
+assignLambdaCognitoPolicy(userPool.arn);
 
 const api = apiGatewayUtils.createAPIGateway({
   name: "users-api",
