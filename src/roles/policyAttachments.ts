@@ -1,15 +1,14 @@
 import * as aws from "@pulumi/aws";
-import { Role } from "@pulumi/aws/iam";
-import { Secret } from "@pulumi/aws/secretsmanager";
 import { Output } from "@pulumi/pulumi";
 
 export function assignLambdaPolicies(
   userPoolArn: Output<string>,
-  lambdaRole: Role,
-  cognitoSecret: Secret
+  lambdaRole: aws.iam.Role,
+  cognitoSecret: aws.secretsmanager.Secret
 ) {
+  // Attach policy for Cognito
   userPoolArn.apply((arn) => {
-    const cognitoPolicyDocument = aws.iam
+    aws.iam
       .getPolicyDocument({
         statements: [
           {
@@ -19,22 +18,21 @@ export function assignLambdaPolicies(
           },
         ],
       })
-      .then((policyDoc) => policyDoc.json);
+      .then((policyDoc) => {
+        const cognitoPolicy = new aws.iam.Policy("cognitoAccessPolicy", {
+          policy: policyDoc.json,
+        });
 
-    const cognitoPolicy = new aws.iam.Policy("cognitoAccessPolicy", {
-      policy: cognitoPolicyDocument,
-    });
-
-    cognitoPolicy.arn.apply((policyArn) => {
-      new aws.iam.RolePolicyAttachment("lambdaCognitoPolicyAttachment", {
-        role: lambdaRole,
-        policyArn: policyArn,
+        new aws.iam.RolePolicyAttachment("lambdaCognitoPolicyAttachment", {
+          role: lambdaRole.name,
+          policyArn: cognitoPolicy.arn,
+        });
       });
-    });
   });
 
+  // Attach policy for Secrets Manager
   cognitoSecret.arn.apply((arn) => {
-    const secretAccessPolicyDocument = aws.iam
+    aws.iam
       .getPolicyDocument({
         statements: [
           {
@@ -44,15 +42,15 @@ export function assignLambdaPolicies(
           },
         ],
       })
-      .then((policyDoc) => policyDoc.json);
+      .then((policyDoc) => {
+        const secretAccessPolicy = new aws.iam.Policy("secretAccessPolicy", {
+          policy: policyDoc.json,
+        });
 
-    const secretAccessPolicy = new aws.iam.Policy("secretAccessPolicy", {
-      policy: secretAccessPolicyDocument,
-    });
-
-    new aws.iam.RolePolicyAttachment("secretAccessPolicyAttachment", {
-      role: lambdaRole.name,
-      policyArn: secretAccessPolicy.arn,
-    });
+        new aws.iam.RolePolicyAttachment("secretAccessPolicyAttachment", {
+          role: lambdaRole.name,
+          policyArn: secretAccessPolicy.arn,
+        });
+      });
   });
 }
