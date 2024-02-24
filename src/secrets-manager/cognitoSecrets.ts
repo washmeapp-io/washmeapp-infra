@@ -17,7 +17,7 @@ export function createCognitoSecrets(
     });
 
   const cognitoSecret = new aws.secretsmanager.Secret("cognitoSecret", {
-    name: "cognitoDetails",
+    name: "cognitoScrets",
     description: "Stores Cognito user pool and client IDs",
   });
 
