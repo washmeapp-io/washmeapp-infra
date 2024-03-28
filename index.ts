@@ -21,8 +21,8 @@ if (!env || !region) {
 }
 
 const provider = utils.createProvider(region as Input<Region>, env);
-const cognitoSecretName = `${env}-cognito-secrets-v1`;
-const dynamoSecretName = `${env}-dynamo-secrets-v1`;
+const cognitoSecretName = `${env}-cognito-secrets-v2`;
+const dynamoSecretName = `${env}-dynamo-secrets-v2`;
 
 
 const { lambda } = lambdaUtils.createLambdaFunction({
