@@ -18,7 +18,7 @@ export function createUserPool(args: ICreateUserPool) {
       defineAuthChallenge: trigger.arn,
       verifyAuthChallengeResponse: trigger.arn,
     },
-  });
+  }, {dependsOn: trigger});
 
   // Create a User Pool Client
   const userPoolClient = new aws.cognito.UserPoolClient(userPoolClientName, {

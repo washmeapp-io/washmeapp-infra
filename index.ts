@@ -4,7 +4,6 @@ import * as lambdaUtils from "./src/lambdas";
 import * as apiGatewayUtils from "./src/api-gateway";
 import * as cognitoUtils from "./src/cognito";
 import * as utils from "./src/utils";
-import { assignLambdaPolicies } from "./src/roles/policyAttachments";
 import * as secretManagerUtils from "./src/secrets-manager";
 import { lambdaRole } from "./src/roles/roles";
 
@@ -35,7 +34,5 @@ const { cognitoSecret } = secretManagerUtils.createCognitoSecrets(
   userPool.id,
   userPoolClient.id
 );
-
-assignLambdaPolicies(userPool.arn, lambdaRole, cognitoSecret);
 
 export const invoke = api.executionArn;

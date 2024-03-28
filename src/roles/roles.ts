@@ -19,25 +19,18 @@ export const lambdaRole = new aws.iam.Role("lambda-role", {
   assumeRolePolicy: lambdaPolicy.then((assumeRole) => assumeRole.json),
 });
 
-new aws.iam.RolePolicy("lambda-log-policy", {
-  role: lambdaRole.id,
-  policy: JSON.stringify({
-    Version: "2012-10-17",
-    Statement: [
-      {
-        Action: [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-        ],
-        Resource: "arn:aws:logs:*:*:*",
-        Effect: "Allow",
-      },
-    ],
-  }),
+new aws.iam.RolePolicyAttachment("write-cloud-watch-logs", {
+  role: lambdaRole.name,
+  policyArn: "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
 });
 
 new aws.iam.RolePolicyAttachment("cognito-power-user-role-attachment", {
   role: lambdaRole.name,
   policyArn: "arn:aws:iam::aws:policy/AmazonCognitoPowerUser",
+});
+
+
+new aws.iam.RolePolicyAttachment("secrets-manager", {
+  role: lambdaRole.name,
+  policyArn: "arn:aws:iam::aws:policy/SecretsManagerReadWrite",
 });
