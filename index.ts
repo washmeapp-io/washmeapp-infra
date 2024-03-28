@@ -22,6 +22,7 @@ if (!env || !region) {
 
 const provider = utils.createProvider(region as Input<Region>, env);
 const cognitoSecretName = `${env}-cognito-secrets-v1`;
+const dynamoSecretName = `${env}-dynamo-secrets-v1`;
 
 
 const { lambda } = lambdaUtils.createLambdaFunction({
@@ -33,6 +34,7 @@ const { lambda } = lambdaUtils.createLambdaFunction({
   environment: {
     variables: {
       COGNITO_SECRET_NAME: cognitoSecretName,
+      DYNAMODB_SECRET_NAME: dynamoSecretName,
       REGION: region
     }
   }
@@ -51,7 +53,7 @@ const api = apiGatewayUtils.createAPIGateway({
   userPool: userPool,
 });
 
-dbUtils.createOPTCodesDynamoDBTable({env: env})
+dbUtils.createOPTCodesDynamoDBTable({env: env, tableName: `${env}-otp-codes-table`})
 
 secretManagerUtils.createCognitoSecrets(
   {
@@ -62,5 +64,15 @@ secretManagerUtils.createCognitoSecrets(
     region: region
   }
 );
+
+secretManagerUtils.createDynamoSecrets(
+  {
+    name: dynamoSecretName,
+    resourceName: dynamoSecretName,
+    region: region,
+    tableName: `${env}-otp-codes-table`
+  }
+);
+
 
 export const invoke = api.executionArn;

@@ -36,29 +36,3 @@ export function createCognitoSecrets(
 
   return { cognitoSecret };
 }
-
-interface ICreateAppSecrets {
-  region: string;
-  name: string;
-  resourceName: string;
-}
-
-export function createAppSecrets(
-  args: ICreateAppSecrets
-) {
-  const {region, resourceName, name} = args
-
-  const appSecret = new aws.secretsmanager.Secret(name, {
-    name: resourceName,
-    description: "Stores general app secrets",
-  });
-
-  const appDetails = JSON.stringify({region: region})
-
-  new aws.secretsmanager.SecretVersion(`${name}-version`, {
-    secretId: appSecret.id,
-    secretString: appDetails,
-  });
-
-  return {appSecret};
-}

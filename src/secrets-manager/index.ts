@@ -1,1 +1,2 @@
-export {createCognitoSecrets, createAppSecrets} from "./cognitoSecrets";
+export {createCognitoSecrets} from "./cognitoSecrets";
+export {createDynamoSecrets} from "./dynamoSecrets";

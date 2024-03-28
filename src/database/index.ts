@@ -1,13 +1,14 @@
 import * as aws from "@pulumi/aws";
 
 interface ICreateDynamoDBTable {
-  env: string
+  env: string;
+  tableName: string;
 }
 
 export function createOPTCodesDynamoDBTable(args: ICreateDynamoDBTable) {
-  const {env} = args
+  const {env, tableName} = args
   return new aws.dynamodb.Table(`${env}-dynamo-db-otp-codes`, {
-    name: "OTPCodes",
+    name: tableName,
     billingMode: "PAY_PER_REQUEST",
     hashKey: "email",
     attributes: [
@@ -20,6 +21,11 @@ export function createOPTCodesDynamoDBTable(args: ICreateDynamoDBTable) {
         type: "S",
       }
     ],
+    globalSecondaryIndexes: [{
+      name: "OTPCodeIndex",
+      hashKey: "OTPCode",
+      projectionType: "ALL",
+    }],
     ttl: {
       attributeName: "TimeToExist",
       enabled: false,
