@@ -32,7 +32,7 @@ const api = apiGatewayUtils.createAPIGateway({
 });
 
 const { cognitoSecret } = secretManagerUtils.createCognitoSecrets(
-  userPool.arn,
+  userPool.id,
   userPoolClient.id
 );
 
