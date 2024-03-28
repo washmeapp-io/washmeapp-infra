@@ -36,3 +36,8 @@ new aws.iam.RolePolicy("lambda-log-policy", {
     ],
   }),
 });
+
+new aws.iam.RolePolicyAttachment("cognito-power-user-role-attachment", {
+  role: lambdaRole.name,
+  policyArn: "arn:aws:iam::aws:policy/AmazonCognitoPowerUser",
+});
