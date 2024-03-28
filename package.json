@@ -5,6 +5,10 @@
     "@types/node": "^18",
     "typescript": "^4.0.0"
   },
+  "scripts": {
+    "pulumi:dev:up": "export AWS_PROFILE=pulumi && export PULUMI_ENV=dev && pulumi up",
+    "pulumi:dev:destroy": "export AWS_PROFILE=pulumi && export PULUMI_ENV=dev && pulumi destroy"
+  },
   "dependencies": {
     "@pulumi/aws": "^6.18.1",
     "@pulumi/aws-apigateway": "^2.1.1",

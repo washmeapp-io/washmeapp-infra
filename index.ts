@@ -1,38 +1,66 @@
-import * as aws from "@pulumi/aws";
-
+import * as pulumi from "@pulumi/pulumi";
 import * as lambdaUtils from "./src/lambdas";
 import * as apiGatewayUtils from "./src/api-gateway";
 import * as cognitoUtils from "./src/cognito";
+import * as dbUtils from "./src/database";
 import * as utils from "./src/utils";
 import * as secretManagerUtils from "./src/secrets-manager";
-import { lambdaRole } from "./src/roles/roles";
+import {Input} from "@pulumi/pulumi";
+import {Region} from "@pulumi/aws";
 
-const provider = utils.createDefaultProvider();
+
+const env = process.env.PULUMI_ENV;
+const awsRegion = process.env.AWS_REGION;
+
+const config = new pulumi.Config("aws");
+const region = config.require("region") || awsRegion;
+
+if (!env || !region) {
+  console.error("PULUMI_ENV and pulumi region are required");
+  process.exit(0)
+}
+
+const provider = utils.createProvider(region as Input<Region>, env);
+const cognitoSecretName = `${env}-cognito-secrets-v1`;
+
 
 const { lambda } = lambdaUtils.createLambdaFunction({
-  name: "washmeapp-api-users",
-  resourceName: "washmeapp-api-users",
+  name: `${env}-washmeapp-api-users`,
+  resourceName: `${env}-washmeapp-api-users`,
   provider: provider,
   bucketKey: "users-api/code.zip",
   bucketId: "washmeapp-code",
+  environment: {
+    variables: {
+      COGNITO_SECRET_NAME: cognitoSecretName,
+      REGION: region
+    }
+  }
 });
 
 const { userPool, userPoolClient } = cognitoUtils.createUserPool({
-  userPoolClientName: "washme-user-pool-client",
-  userPoolName: "washme-user-pool",
+  userPoolClientName: `${env}-washme-user-pool-client`,
+  userPoolName: `${env}-washme-user-pool`,
   trigger: lambda,
 });
 
 const api = apiGatewayUtils.createAPIGateway({
-  name: "users-api",
+  name: `${env}-users-api`,
   handler: lambda,
   provider,
   userPool: userPool,
 });
 
-const { cognitoSecret } = secretManagerUtils.createCognitoSecrets(
-  userPool.id,
-  userPoolClient.id
+dbUtils.createOPTCodesDynamoDBTable({env: env})
+
+secretManagerUtils.createCognitoSecrets(
+  {
+    name: cognitoSecretName,
+    resourceName: cognitoSecretName,
+    userPoolId: userPool.id,
+    userPoolClientId: userPoolClient.id,
+    region: region
+  }
 );
 
 export const invoke = api.executionArn;

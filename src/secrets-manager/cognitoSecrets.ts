@@ -2,10 +2,18 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import { Output } from "@pulumi/pulumi";
 
+interface ICreateCognitoSecrets {
+  userPoolId: Output<string>;
+  userPoolClientId: Output<string>;
+  name: string;
+  resourceName: string;
+  region: string
+}
+
 export function createCognitoSecrets(
-  userPoolId: Output<string>,
-  userPoolClientId: Output<string>
+  args: ICreateCognitoSecrets
 ) {
+  const {name, resourceName, userPoolId, userPoolClientId} = args
   // Combine the two Outputs into a single structure and then convert into a JSON string
   const cognitoDetails = pulumi
     .all([userPoolId, userPoolClientId])
@@ -16,15 +24,41 @@ export function createCognitoSecrets(
       });
     });
 
-  const cognitoSecret = new aws.secretsmanager.Secret("cognitoSecret", {
-    name: "cognitoScrets",
+  const cognitoSecret = new aws.secretsmanager.Secret(name, {
+    name: resourceName,
     description: "Stores Cognito user pool and client IDs",
   });
 
-  new aws.secretsmanager.SecretVersion("cognitoSecretVersion", {
+  new aws.secretsmanager.SecretVersion(`${name}-version`, {
     secretId: cognitoSecret.id,
     secretString: cognitoDetails,
   });
 
   return { cognitoSecret };
+}
+
+interface ICreateAppSecrets {
+  region: string;
+  name: string;
+  resourceName: string;
+}
+
+export function createAppSecrets(
+  args: ICreateAppSecrets
+) {
+  const {region, resourceName, name} = args
+
+  const appSecret = new aws.secretsmanager.Secret(name, {
+    name: resourceName,
+    description: "Stores general app secrets",
+  });
+
+  const appDetails = JSON.stringify({region: region})
+
+  new aws.secretsmanager.SecretVersion(`${name}-version`, {
+    secretId: appSecret.id,
+    secretString: appDetails,
+  });
+
+  return {appSecret};
 }

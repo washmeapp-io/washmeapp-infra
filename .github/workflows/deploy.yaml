@@ -60,4 +60,5 @@ jobs:
           stack-name: dev
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_ENV: ${{ secrets.PULUMI_ENV }}
           S3_OBJECT_HASH: ${{ steps.s3hash.outputs.hash }}

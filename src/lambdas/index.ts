@@ -39,7 +39,7 @@ export function createLambdaFunction(args: CreateLambdaParams) {
     sourceCodeHash: process.env.S3_OBJECT_HASH,
     ...(environment && { environment }),
   };
-
+  
   const lambda = new aws.lambda.Function(resourceName, lambdaConfig, {
     provider,
     replaceOnChanges: ["environment"],

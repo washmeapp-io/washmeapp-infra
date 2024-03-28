@@ -1,1 +1,1 @@
-export { createCognitoSecrets } from "./cognitoSecrets";
+export {createCognitoSecrets, createAppSecrets} from "./cognitoSecrets";

@@ -1,9 +1,9 @@
 import * as aws from "@pulumi/aws";
+import {Input} from "@pulumi/pulumi";
+import {Region} from "@pulumi/aws";
 
-export function createDefaultProvider() {
-  const usEast1Provider = new aws.Provider("us-east-1-provider", {
-    region: "us-east-1",
+export function createProvider(region: Input<Region>, env: string) {
+  return new aws.Provider(`${env}-${region}-provider`, {
+    region: region,
   });
-
-  return usEast1Provider;
 }
