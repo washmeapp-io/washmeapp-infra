@@ -35,7 +35,7 @@ new aws.iam.RolePolicyAttachment("secrets-manager", {
   policyArn: "arn:aws:iam::aws:policy/SecretsManagerReadWrite",
 });
 
-new aws.iam.RolePolicyAttachment("lambda-dynamodb-execution-role-attachment", {
+new aws.iam.RolePolicyAttachment("lambda-dynamodb-full-access", {
   role: lambdaRole.name,
-  policyArn: "arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole",
+  policyArn: "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
 });

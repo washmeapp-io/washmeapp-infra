@@ -51,7 +51,12 @@ jobs:
         run: pulumi stack select dev
 
       - name: Pulumi config
-        run: pulumi config set aws:region us-east-1
+        run: pulumi config set aws:region ${{ secrets.AWS_REGION }}
+
+      - name: Pulumi Refresh
+        run: pulumi refresh --yes
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Pulumi Up
         uses: pulumi/actions@v3

@@ -28,7 +28,7 @@ export function createOPTCodesDynamoDBTable(args: ICreateDynamoDBTable) {
     }],
     ttl: {
       attributeName: "TimeToExist",
-      enabled: false,
+      enabled: true,
     },
     tags: {
       Environment: env,
