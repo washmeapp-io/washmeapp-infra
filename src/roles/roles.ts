@@ -29,7 +29,6 @@ new aws.iam.RolePolicyAttachment("cognito-power-user-role-attachment", {
   policyArn: "arn:aws:iam::aws:policy/AmazonCognitoPowerUser",
 });
 
-
 new aws.iam.RolePolicyAttachment("secrets-manager", {
   role: lambdaRole.name,
   policyArn: "arn:aws:iam::aws:policy/SecretsManagerReadWrite",
@@ -38,4 +37,9 @@ new aws.iam.RolePolicyAttachment("secrets-manager", {
 new aws.iam.RolePolicyAttachment("lambda-dynamodb-full-access", {
   role: lambdaRole.name,
   policyArn: "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+});
+
+new aws.iam.RolePolicyAttachment("lambda-ses-full-access", {
+  role: lambdaRole.name,
+  policyArn: "arn:aws:iam::aws:policy/AmazonSESFullAccess",
 });

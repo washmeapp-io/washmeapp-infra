@@ -6,7 +6,7 @@
     "typescript": "^4.0.0"
   },
   "scripts": {
-    "pulumi:dev:up": "export AWS_PROFILE=pulumi && export PULUMI_ENV=dev && pulumi up",
+    "pulumi:dev:up": "export AWS_PROFILE=pulumi && export PULUMI_ENV=dev && pulumi refresh && pulumi up",
     "pulumi:dev:destroy": "export AWS_PROFILE=pulumi && export PULUMI_ENV=dev && pulumi destroy"
   },
   "dependencies": {
