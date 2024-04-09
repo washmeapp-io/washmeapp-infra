@@ -5,12 +5,13 @@ import { Authorizer, Resource, RestApi } from "@pulumi/aws/apigateway";
 interface CreateAPIGatewayMethodsParams {
   authorizer: Authorizer;
   api: RestApi;
-  loginResource: Resource;
+  sendOTPResource: Resource;
+  verifyOTPResource: Resource;
   usersResource: Resource;
 }
 
 export function createAPIGatewayMethods(args: CreateAPIGatewayMethodsParams) {
-  const { authorizer, api, loginResource, usersResource } = args;
+  const {authorizer, api, sendOTPResource, usersResource, verifyOTPResource} = args;
 
   const getUsersMethod = new aws.apigateway.Method("get-users-method", {
     restApi: api.id,
@@ -20,12 +21,19 @@ export function createAPIGatewayMethods(args: CreateAPIGatewayMethodsParams) {
     authorizerId: authorizer.id,
   });
 
-  const loginPostMethod = new aws.apigateway.Method("login-post-method", {
+  const sendOTPPostMethod = new aws.apigateway.Method("send-otp-post-method", {
     restApi: api.id,
-    resourceId: loginResource.id,
+    resourceId: sendOTPResource.id,
     httpMethod: "POST",
     authorization: "NONE",
   });
 
-  return { getUsersMethod, loginPostMethod };
+  const verifyOTPPostMethod = new aws.apigateway.Method("verify-otp-post-method", {
+    restApi: api.id,
+    resourceId: verifyOTPResource.id,
+    httpMethod: "POST",
+    authorization: "NONE",
+  });
+
+  return {getUsersMethod, sendOTPPostMethod, verifyOTPPostMethod};
 }

@@ -17,11 +17,17 @@ export function createAPIGatewayResources(
     pathPart: "users",
   });
 
-  const loginResource = new aws.apigateway.Resource("login-resource", {
+  const sendOTPResource = new aws.apigateway.Resource("send-otp-resource", {
     restApi: api.id,
     parentId: usersResource.id,
-    pathPart: "login",
+    pathPart: "send-otp",
   });
 
-  return { usersResource, loginResource };
+  const verifyOTPResource = new aws.apigateway.Resource("verify-otp-resource", {
+    restApi: api.id,
+    parentId: usersResource.id,
+    pathPart: "verify-otp",
+  });
+
+  return {usersResource, sendOTPResource, verifyOTPResource};
 }

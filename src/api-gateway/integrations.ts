@@ -5,10 +5,12 @@ import { Authorizer, Method, Resource, RestApi } from "@pulumi/aws/apigateway";
 
 interface CreateAPIGatewayIntegrationParams {
   api: RestApi;
-  loginResource: Resource;
+  sendOTPResource: Resource;
+  verifyOTPResource: Resource;
   usersResource: Resource;
   getUsersMethod: Method;
-  loginPostMethod: Method;
+  sendOTPPostMethod: Method;
+  verifyOTPPostMethod: Method
   handler: aws.lambda.Function;
 }
 
@@ -17,10 +19,12 @@ export function createAPIGatewayIntegrations(
 ) {
   const {
     api,
-    loginResource,
+    sendOTPResource,
+    verifyOTPResource,
+    verifyOTPPostMethod,
     usersResource,
     getUsersMethod,
-    loginPostMethod,
+    sendOTPPostMethod,
     handler,
   } = args;
 
@@ -33,10 +37,19 @@ export function createAPIGatewayIntegrations(
     integrationHttpMethod: "POST",
   });
 
-  new aws.apigateway.Integration("login-post-method-integration", {
+  new aws.apigateway.Integration("send-otp-post-method-integration", {
     restApi: api.id,
-    resourceId: loginResource.id,
-    httpMethod: loginPostMethod.httpMethod,
+    resourceId: sendOTPResource.id,
+    httpMethod: sendOTPPostMethod.httpMethod,
+    type: "AWS_PROXY",
+    uri: handler.invokeArn,
+    integrationHttpMethod: "POST",
+  });
+
+  new aws.apigateway.Integration("verify-otp-post-method-integration", {
+    restApi: api.id,
+    resourceId: verifyOTPResource.id,
+    httpMethod: verifyOTPPostMethod.httpMethod,
     type: "AWS_PROXY",
     uri: handler.invokeArn,
     integrationHttpMethod: "POST",

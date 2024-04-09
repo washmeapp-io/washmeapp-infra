@@ -23,20 +23,23 @@ export function createAPIGateway(args: CreateAPIGatewayParams) {
     providerArns: [userPool.arn],
   });
 
-  const { loginResource, usersResource } = createAPIGatewayResources({ api });
-  const { getUsersMethod, loginPostMethod } = createAPIGatewayMethods({
-    api,
-    authorizer,
-    loginResource,
-    usersResource,
+  const {verifyOTPResource, sendOTPResource, usersResource} = createAPIGatewayResources({api});
+  const {getUsersMethod, verifyOTPPostMethod, sendOTPPostMethod} = createAPIGatewayMethods({
+    api: api,
+    authorizer: authorizer,
+    sendOTPResource: sendOTPResource,
+    verifyOTPResource: verifyOTPResource,
+    usersResource: usersResource,
   });
   createAPIGatewayIntegrations({
-    api,
-    getUsersMethod,
-    handler,
-    loginPostMethod,
-    loginResource,
-    usersResource,
+    api: api,
+    handler: handler,
+    getUsersMethod: getUsersMethod,
+    sendOTPPostMethod: sendOTPPostMethod,
+    verifyOTPPostMethod: verifyOTPPostMethod,
+    verifyOTPResource: verifyOTPResource,
+    sendOTPResource: sendOTPResource,
+    usersResource: usersResource,
   });
 
   // Enable API Gateway to invoke the Lambda function
