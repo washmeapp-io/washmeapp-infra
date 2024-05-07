@@ -8,14 +8,16 @@ interface CreateAPIGatewayIntegrationParams {
   sendOTPResource: Resource;
   verifyOTPResource: Resource;
   usersResource: Resource;
+  refreshSessionResource: Resource;
   getUsersMethod: Method;
   sendOTPPostMethod: Method;
-  verifyOTPPostMethod: Method
+  verifyOTPPostMethod: Method;
+  refreshSessionMethod: Method;
   handler: aws.lambda.Function;
 }
 
 export function createAPIGatewayIntegrations(
-  args: CreateAPIGatewayIntegrationParams
+  args: CreateAPIGatewayIntegrationParams,
 ) {
   const {
     api,
@@ -25,6 +27,8 @@ export function createAPIGatewayIntegrations(
     usersResource,
     getUsersMethod,
     sendOTPPostMethod,
+    refreshSessionResource,
+    refreshSessionMethod,
     handler,
   } = args;
 
@@ -50,6 +54,15 @@ export function createAPIGatewayIntegrations(
     restApi: api.id,
     resourceId: verifyOTPResource.id,
     httpMethod: verifyOTPPostMethod.httpMethod,
+    type: "AWS_PROXY",
+    uri: handler.invokeArn,
+    integrationHttpMethod: "POST",
+  });
+
+  new aws.apigateway.Integration("refresh-session-post-method-integration", {
+    restApi: api.id,
+    resourceId: refreshSessionResource.id,
+    httpMethod: refreshSessionMethod.httpMethod,
     type: "AWS_PROXY",
     uri: handler.invokeArn,
     integrationHttpMethod: "POST",

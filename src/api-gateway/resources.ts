@@ -29,5 +29,11 @@ export function createAPIGatewayResources(
     pathPart: "verify-otp",
   });
 
-  return {usersResource, sendOTPResource, verifyOTPResource};
+  const refreshSessionResource = new aws.apigateway.Resource("refresh-session-resource", {
+    restApi: api.id,
+    parentId: usersResource.id,
+    pathPart: "refresh-session",
+  });
+
+  return {usersResource, sendOTPResource, verifyOTPResource, refreshSessionResource};
 }

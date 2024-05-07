@@ -8,10 +8,18 @@ interface CreateAPIGatewayMethodsParams {
   sendOTPResource: Resource;
   verifyOTPResource: Resource;
   usersResource: Resource;
+  refreshSessionResource: Resource;
 }
 
 export function createAPIGatewayMethods(args: CreateAPIGatewayMethodsParams) {
-  const {authorizer, api, sendOTPResource, usersResource, verifyOTPResource} = args;
+  const {
+    authorizer,
+    api,
+    sendOTPResource,
+    usersResource,
+    verifyOTPResource,
+    refreshSessionResource,
+  } = args;
 
   const getUsersMethod = new aws.apigateway.Method("get-users-method", {
     restApi: api.id,
@@ -28,12 +36,30 @@ export function createAPIGatewayMethods(args: CreateAPIGatewayMethodsParams) {
     authorization: "NONE",
   });
 
-  const verifyOTPPostMethod = new aws.apigateway.Method("verify-otp-post-method", {
-    restApi: api.id,
-    resourceId: verifyOTPResource.id,
-    httpMethod: "POST",
-    authorization: "NONE",
-  });
+  const verifyOTPPostMethod = new aws.apigateway.Method(
+    "verify-otp-post-method",
+    {
+      restApi: api.id,
+      resourceId: verifyOTPResource.id,
+      httpMethod: "POST",
+      authorization: "NONE",
+    },
+  );
 
-  return {getUsersMethod, sendOTPPostMethod, verifyOTPPostMethod};
+  const refreshSessionPostMethod = new aws.apigateway.Method(
+    "refresh-session-post-method",
+    {
+      restApi: api.id,
+      resourceId: refreshSessionResource.id,
+      httpMethod: "POST",
+      authorization: "NONE",
+    },
+  );
+
+  return {
+    getUsersMethod,
+    sendOTPPostMethod,
+    verifyOTPPostMethod,
+    refreshSessionPostMethod,
+  };
 }
