@@ -5,9 +5,8 @@ import * as cognitoUtils from "./src/cognito";
 import * as dbUtils from "./src/database";
 import * as utils from "./src/utils";
 import * as secretManagerUtils from "./src/secrets-manager";
-import {Input} from "@pulumi/pulumi";
-import {Region} from "@pulumi/aws";
-
+import { Input } from "@pulumi/pulumi";
+import { Region } from "@pulumi/aws";
 
 const env = process.env.PULUMI_ENV;
 const awsRegion = process.env.AWS_REGION;
@@ -17,13 +16,12 @@ const region = config.require("region") || awsRegion;
 
 if (!env || !region) {
   console.error("PULUMI_ENV and pulumi region are required");
-  process.exit(0)
+  process.exit(0);
 }
 
 const provider = utils.createProvider(region as Input<Region>, env);
 const cognitoSecretName = `${env}-cognito-secrets-v2`;
 const dynamoSecretName = `${env}-dynamo-secrets-v2`;
-
 
 const { lambda } = lambdaUtils.createLambdaFunction({
   name: `${env}-washmeapp-api-users`,
@@ -35,9 +33,10 @@ const { lambda } = lambdaUtils.createLambdaFunction({
     variables: {
       COGNITO_SECRET_NAME: cognitoSecretName,
       DYNAMODB_SECRET_NAME: dynamoSecretName,
-      REGION: region
-    }
-  }
+      REGION: region,
+    },
+  },
+  timeout: 5,
 });
 
 const { userPool, userPoolClient } = cognitoUtils.createUserPool({
@@ -53,26 +52,24 @@ const api = apiGatewayUtils.createAPIGateway({
   userPool: userPool,
 });
 
-dbUtils.createOPTCodesDynamoDBTable({env: env, tableName: `${env}-otp-codes-table`})
+dbUtils.createOPTCodesDynamoDBTable({
+  env: env,
+  tableName: `${env}-otp-codes-table`,
+});
 
-secretManagerUtils.createCognitoSecrets(
-  {
-    name: cognitoSecretName,
-    resourceName: cognitoSecretName,
-    userPoolId: userPool.id,
-    userPoolClientId: userPoolClient.id,
-    region: region
-  }
-);
+secretManagerUtils.createCognitoSecrets({
+  name: cognitoSecretName,
+  resourceName: cognitoSecretName,
+  userPoolId: userPool.id,
+  userPoolClientId: userPoolClient.id,
+  region: region,
+});
 
-secretManagerUtils.createDynamoSecrets(
-  {
-    name: dynamoSecretName,
-    resourceName: dynamoSecretName,
-    region: region,
-    tableName: `${env}-otp-codes-table`
-  }
-);
-
+secretManagerUtils.createDynamoSecrets({
+  name: dynamoSecretName,
+  resourceName: dynamoSecretName,
+  region: region,
+  tableName: `${env}-otp-codes-table`,
+});
 
 export const invoke = api.executionArn;

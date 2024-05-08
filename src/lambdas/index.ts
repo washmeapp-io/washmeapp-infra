@@ -17,6 +17,7 @@ interface CreateLambdaParams {
   provider: pulumi.ProviderResource;
   environment?: Environment;
   dependsOn?: any[];
+  timeout?: number;
 }
 
 export function createLambdaFunction(args: CreateLambdaParams) {
@@ -28,6 +29,7 @@ export function createLambdaFunction(args: CreateLambdaParams) {
     environment,
     resourceName,
     dependsOn,
+    timeout = 3,
   } = args;
   let lambdaConfig: aws.lambda.FunctionArgs = {
     name: name,
@@ -36,10 +38,11 @@ export function createLambdaFunction(args: CreateLambdaParams) {
     role: lambdaRole.arn,
     s3Bucket: bucketId,
     s3Key: bucketKey,
+    timeout: timeout,
     sourceCodeHash: process.env.S3_OBJECT_HASH,
     ...(environment && { environment }),
   };
-  
+
   const lambda = new aws.lambda.Function(resourceName, lambdaConfig, {
     provider,
     replaceOnChanges: ["environment"],
