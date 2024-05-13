@@ -3,15 +3,17 @@ import * as pulumi from "@pulumi/pulumi";
 import * as apiGatewayUserResource from "./resources";
 import * as apiGatewayUserMethod from "./methods";
 import * as apiGatewayUserIntegrations from "./integrations";
+import * as apiGatewayCommon from "../common";
 
 interface CreateUserAPIGatewayParams {
   name: string;
   handler: aws.lambda.Function;
   provider: pulumi.ProviderResource;
+  env: string;
 }
 
 export function createUsersAPIGateway(args: CreateUserAPIGatewayParams) {
-  const { name, handler, provider } = args;
+  const { name, handler, provider, env } = args;
   const api = new aws.apigateway.RestApi(name, {}, { provider });
 
   const { verifyOTPResource, sendOTPResource, refreshSessionResource } =
@@ -40,6 +42,13 @@ export function createUsersAPIGateway(args: CreateUserAPIGatewayParams) {
     function: handler.name,
     principal: "apigateway.amazonaws.com",
     sourceArn: pulumi.interpolate`${api.executionArn}/*/*`, // Allow invoking the function via any method on any path of this API
+  });
+
+  apiGatewayCommon.deployApiGateway({
+    env,
+    api,
+    methods: [sendOTPPostMethod, verifyOTPPostMethod, refreshSessionPostMethod],
+    name,
   });
 
   return api;

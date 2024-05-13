@@ -34,5 +34,6 @@ export default function (args: IServiceModuleArgs) {
     handler: lambda,
     provider: provider,
     userPool: userPool,
+    env: env,
   });
 }

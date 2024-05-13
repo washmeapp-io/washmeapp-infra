@@ -1,6 +1,5 @@
 import * as aws from "@pulumi/aws";
 import { RestApi } from "@pulumi/aws/apigateway";
-import * as pulumi from "@pulumi/pulumi";
 
 interface CreateAPIGatewayResourcesParams {
   api: RestApi;

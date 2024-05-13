@@ -42,6 +42,7 @@ export default function (args: IUserModuleArgs) {
     name: `${env}-users-api`,
     handler: lambda,
     provider,
+    env,
   });
 
   dbUtils.createOPTCodesDynamoDBTable({
