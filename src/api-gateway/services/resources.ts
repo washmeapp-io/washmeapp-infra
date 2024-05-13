@@ -17,11 +17,17 @@ export function createAPIGatewayResources(
     pathPart: "services",
   });
 
+  const carwashResource = new aws.apigateway.Resource("carwash-resource", {
+    restApi: api.id,
+    parentId: servicesResource.id,
+    pathPart: "carwash",
+  });
+
   const createCarwashResource = new aws.apigateway.Resource(
     "create-carwash-resource",
     {
       restApi: api.id,
-      parentId: servicesResource.id,
+      parentId: carwashResource.id,
       pathPart: "create",
     },
   );
