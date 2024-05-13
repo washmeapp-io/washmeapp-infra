@@ -1,15 +1,11 @@
 import * as aws from "@pulumi/aws";
-import * as pulumi from "@pulumi/pulumi";
-import { createAPIGatewayMethods } from "./methods";
-import { Authorizer, Method, Resource, RestApi } from "@pulumi/aws/apigateway";
+import { Method, Resource, RestApi } from "@pulumi/aws/apigateway";
 
 interface CreateAPIGatewayIntegrationParams {
   api: RestApi;
   sendOTPResource: Resource;
   verifyOTPResource: Resource;
-  usersResource: Resource;
   refreshSessionResource: Resource;
-  getUsersMethod: Method;
   sendOTPPostMethod: Method;
   verifyOTPPostMethod: Method;
   refreshSessionMethod: Method;
@@ -24,22 +20,11 @@ export function createAPIGatewayIntegrations(
     sendOTPResource,
     verifyOTPResource,
     verifyOTPPostMethod,
-    usersResource,
-    getUsersMethod,
     sendOTPPostMethod,
     refreshSessionResource,
     refreshSessionMethod,
     handler,
   } = args;
-
-  new aws.apigateway.Integration("get-users-method-integration", {
-    restApi: api.id,
-    resourceId: usersResource.id,
-    httpMethod: getUsersMethod.httpMethod,
-    type: "AWS_PROXY",
-    uri: handler.invokeArn,
-    integrationHttpMethod: "POST",
-  });
 
   new aws.apigateway.Integration("send-otp-post-method-integration", {
     restApi: api.id,

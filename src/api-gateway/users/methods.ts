@@ -1,33 +1,16 @@
 import * as aws from "@pulumi/aws";
-import * as pulumi from "@pulumi/pulumi";
-import { Authorizer, Resource, RestApi } from "@pulumi/aws/apigateway";
+import { Resource, RestApi } from "@pulumi/aws/apigateway";
 
 interface CreateAPIGatewayMethodsParams {
-  authorizer: Authorizer;
   api: RestApi;
   sendOTPResource: Resource;
   verifyOTPResource: Resource;
-  usersResource: Resource;
   refreshSessionResource: Resource;
 }
 
 export function createAPIGatewayMethods(args: CreateAPIGatewayMethodsParams) {
-  const {
-    authorizer,
-    api,
-    sendOTPResource,
-    usersResource,
-    verifyOTPResource,
-    refreshSessionResource,
-  } = args;
-
-  const getUsersMethod = new aws.apigateway.Method("get-users-method", {
-    restApi: api.id,
-    resourceId: usersResource.id,
-    httpMethod: "GET",
-    authorization: "COGNITO_USER_POOLS",
-    authorizerId: authorizer.id,
-  });
+  const { api, sendOTPResource, verifyOTPResource, refreshSessionResource } =
+    args;
 
   const sendOTPPostMethod = new aws.apigateway.Method("send-otp-post-method", {
     restApi: api.id,
@@ -57,7 +40,6 @@ export function createAPIGatewayMethods(args: CreateAPIGatewayMethodsParams) {
   );
 
   return {
-    getUsersMethod,
     sendOTPPostMethod,
     verifyOTPPostMethod,
     refreshSessionPostMethod,

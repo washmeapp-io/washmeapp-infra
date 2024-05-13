@@ -1,13 +1,12 @@
 import * as aws from "@pulumi/aws";
 import { RestApi } from "@pulumi/aws/apigateway";
-import * as pulumi from "@pulumi/pulumi";
 
 interface CreateAPIGatewayResourcesParams {
   api: RestApi;
 }
 
 export function createAPIGatewayResources(
-  args: CreateAPIGatewayResourcesParams
+  args: CreateAPIGatewayResourcesParams,
 ) {
   const { api } = args;
 
@@ -29,11 +28,14 @@ export function createAPIGatewayResources(
     pathPart: "verify-otp",
   });
 
-  const refreshSessionResource = new aws.apigateway.Resource("refresh-session-resource", {
-    restApi: api.id,
-    parentId: usersResource.id,
-    pathPart: "refresh-session",
-  });
+  const refreshSessionResource = new aws.apigateway.Resource(
+    "refresh-session-resource",
+    {
+      restApi: api.id,
+      parentId: usersResource.id,
+      pathPart: "refresh-session",
+    },
+  );
 
-  return {usersResource, sendOTPResource, verifyOTPResource, refreshSessionResource};
+  return { sendOTPResource, verifyOTPResource, refreshSessionResource };
 }
