@@ -1,5 +1,6 @@
 import * as lambdaUtils from "../../lambdas";
 import { createServicesAPIGateway } from "../../api-gateway";
+import * as database from "../../database";
 import { Provider } from "@pulumi/aws";
 import * as aws from "@pulumi/aws";
 
@@ -10,10 +11,12 @@ export interface IServiceModuleArgs {
   dynamoSecretName: string;
   region: string;
   userPool: aws.cognito.UserPool;
+  mongoAtlasOrgId: string;
 }
 
 export default function (args: IServiceModuleArgs) {
-  const { region, env, provider, dynamoSecretName, userPool } = args;
+  const { region, env, provider, dynamoSecretName, userPool, mongoAtlasOrgId } =
+    args;
   const { lambda } = lambdaUtils.createLambdaFunction({
     name: `${env}-washmeapp-api-services`,
     resourceName: `${env}-washmeapp-api-services`,
@@ -35,5 +38,11 @@ export default function (args: IServiceModuleArgs) {
     provider: provider,
     userPool: userPool,
     env: env,
+  });
+
+  database.servicesApiDB.createMongoAtlasCluster({
+    mongoAtlasOrgId,
+    env,
+    region,
   });
 }

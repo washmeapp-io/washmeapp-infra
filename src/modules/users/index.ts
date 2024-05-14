@@ -2,7 +2,7 @@ import * as lambdaUtils from "../../lambdas";
 import { Provider } from "@pulumi/aws";
 import * as cognitoUtils from "../../cognito";
 import { createUsersAPIGateway } from "../../api-gateway";
-import * as dbUtils from "../../database";
+import * as database from "../../database";
 import * as secretManagerUtils from "../../secrets-manager";
 
 export interface IUserModuleArgs {
@@ -45,9 +45,8 @@ export default function (args: IUserModuleArgs) {
     env,
   });
 
-  dbUtils.createOPTCodesDynamoDBTable({
+  database.userApiDB.createDynamoDBTables({
     env: env,
-    tableName: `${env}-otp-codes-table`,
   });
 
   secretManagerUtils.createCognitoSecrets({

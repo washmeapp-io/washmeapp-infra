@@ -1,3 +1,7 @@
 config:
+  atlas:orgId: 664384885f015f33020e806b
+  atlas:privateKey:
+    secure: AAABAF5S68LmIMo/S6L6evXE/NppXTS2obvTOl6qgshc3tN+qLaXisfKpD7QKqJA1YiHtjz4+mkwu079vT7IRh6FFhc=
+  atlas:publicKey: zsgirczm
   aws:region: us-east-1
   aws:skipCredentialsValidation: "true"
